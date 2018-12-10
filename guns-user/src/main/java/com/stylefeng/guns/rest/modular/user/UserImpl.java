@@ -5,9 +5,11 @@ import com.stylefeng.guns.api.user.UserAPI;
 import org.springframework.stereotype.Component;
 
 @Component
+@Service(interfaceClass = UserAPI.class)
 public class UserImpl implements UserAPI {
     @Override
     public boolean login(String username, String password) {
-        return true;
+        System.out.println("this is gunsUser-service,username="+username+",password="+password);
+        return false;
     }
 }
