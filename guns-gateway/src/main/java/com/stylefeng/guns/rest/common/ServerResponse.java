@@ -1,8 +1,7 @@
-package com.stylefeng.guns.rest.response;
+package com.stylefeng.guns.rest.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.stylefeng.guns.rest.common.Const;
 
 import java.io.Serializable;
 
@@ -60,7 +59,7 @@ public class ServerResponse<T> implements Serializable {
     public static <T> ServerResponse<T> createSuccessData(T data){
         return new ServerResponse(Const.ResponseCode.SUCCESS.getCode(),data);
     }
-    public static <T> ServerResponse<T> createSuccessMsgData(String msg,T data){
+    public static <T> ServerResponse<T> createSuccessMsgData(String msg, T data){
         return new ServerResponse(Const.ResponseCode.SUCCESS.getCode(),msg,data);
     }
 
@@ -68,16 +67,17 @@ public class ServerResponse<T> implements Serializable {
     public static <T> ServerResponse<T> createError(){
         return new ServerResponse(Const.ResponseCode.ERROR.getCode());
     }
+
     public static <T> ServerResponse<T> createErrorMsg(String msg){
         return new ServerResponse(Const.ResponseCode.ERROR.getCode(),msg);
     }
-    public static <T> ServerResponse<T> createErrorStatusMsg(int status,String msg){
+    public static <T> ServerResponse<T> createErrorStatusMsg(int status, String msg){
         return new ServerResponse(status,msg);
     }
     public static <T> ServerResponse<T> createByErrorData(T data){
         return  new ServerResponse(Const.ResponseCode.ERROR.getCode(),data);
     }
-    public static <T> ServerResponse<T> createErrorMsg(String msg,T data){
+    public static <T> ServerResponse<T> createErrorMsgData(String msg, T data){
         return new ServerResponse(Const.ResponseCode.ERROR.getCode(),msg,data);
     }
 

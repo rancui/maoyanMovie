@@ -5,7 +5,7 @@ import com.stylefeng.guns.api.user.UserAPI;
 import com.stylefeng.guns.rest.modular.auth.controller.dto.AuthRequest;
 import com.stylefeng.guns.rest.modular.auth.controller.dto.AuthResponse;
 import com.stylefeng.guns.rest.modular.auth.util.JwtTokenUtil;
-import com.stylefeng.guns.rest.response.ServerResponse;
+import com.stylefeng.guns.rest.common.ServerResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

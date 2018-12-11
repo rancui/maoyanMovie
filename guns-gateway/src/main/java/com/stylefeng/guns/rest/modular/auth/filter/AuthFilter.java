@@ -7,7 +7,6 @@ import com.stylefeng.guns.rest.common.exception.BizExceptionEnum;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.modular.auth.util.JwtTokenUtil;
 import io.jsonwebtoken.JwtException;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
