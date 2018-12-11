@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserAPI {
     public UserInfoVo getUserInfo(String userId) {
         MoocUserT moocUserT = moocUserTMapper.selectById(userId);
         if(moocUserT!=null){
-            UserInfoVo userInfoVo = this.assmbleUserInfoVo(moocUserT);
+            UserInfoVo userInfoVo = assmbleUserInfoVo(moocUserT);
             return userInfoVo;
         }else {
             return null;
@@ -102,6 +102,29 @@ public class UserServiceImpl implements UserAPI {
 
     @Override
     public UserInfoVo updateUserInfo(UserInfoVo userInfoVo) {
-        return null;
+        MoocUserT moocUserT = new MoocUserT();
+        moocUserT.setUuid(userInfoVo.getUuid());
+        moocUserT.setHeadUrl(userInfoVo.getHeadAddress());
+        moocUserT.setAddress(userInfoVo.getAddress());
+        moocUserT.setBiography(userInfoVo.getBiography());
+        moocUserT.setBirthday(userInfoVo.getBirthday());
+        moocUserT.setUuid(userInfoVo.getUuid());
+        moocUserT.setUserName(userInfoVo.getUsername());
+        moocUserT.setUserSex(userInfoVo.getSex());
+        moocUserT.setUserPhone(userInfoVo.getPhone());
+        moocUserT.setNickName(userInfoVo.getNickname());
+        moocUserT.setLifeState(Integer.parseInt(userInfoVo.getLifeState()));
+        moocUserT.setEmail(userInfoVo.getEmail());
+        moocUserT.setCreateTime(userInfoVo.getCreateTime());
+        moocUserT.setUpdateTime(userInfoVo.getUpdateTime());
+
+        Integer rowCount = moocUserTMapper.updateById(moocUserT);
+        if(rowCount>0){
+           UserInfoVo newUserInfoVo = getUserInfo(String.valueOf(moocUserT.getUuid()));
+           return newUserInfoVo;
+        }else {
+            return userInfoVo;
+        }
+
     }
 }
