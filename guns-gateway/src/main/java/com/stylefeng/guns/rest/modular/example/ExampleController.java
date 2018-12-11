@@ -1,6 +1,8 @@
 package com.stylefeng.guns.rest.modular.example;
 
+import com.stylefeng.guns.rest.common.CurrentUser;
 import com.stylefeng.guns.rest.common.SimpleObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/hello")
 public class ExampleController {
 
+
+//    public ResponseEntity hello(@RequestBody SimpleObject simpleObject) {
     @RequestMapping("")
-    public ResponseEntity hello(@RequestBody SimpleObject simpleObject) {
-        System.out.println(simpleObject.getUser());
+    public ResponseEntity hello() {
+        System.out.println("获取到的userId="+CurrentUser.getCurrentUser());
         return ResponseEntity.ok("请求成功!");
     }
 }
