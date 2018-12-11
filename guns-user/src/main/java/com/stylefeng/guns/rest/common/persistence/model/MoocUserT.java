@@ -177,7 +177,7 @@ public class MoocUserT extends Model<MoocUserT> {
         this.biography = biography;
     }
 
-    public Integer getLifeState() {
+    public String getLifeState() {
         return lifeState;
     }
 
