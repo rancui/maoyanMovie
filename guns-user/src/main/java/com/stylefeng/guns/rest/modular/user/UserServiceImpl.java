@@ -11,6 +11,11 @@ import com.stylefeng.guns.rest.common.persistence.model.MoocUserT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 @Component
 @Service(interfaceClass = UserAPI.class)
 public class UserServiceImpl implements UserAPI {
@@ -54,6 +59,7 @@ public class UserServiceImpl implements UserAPI {
         }
         return 0;
     }
+
 
 
     @Override
