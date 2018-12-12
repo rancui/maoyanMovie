@@ -1,6 +1,6 @@
 rest:
-  auth-open: true #jwt鉴权机制是否开启(true或者false)
-  sign-open: true #签名机制是否开启(true或false)
+  auth-open: false #jwt鉴权机制是否开启(true或者false)
+  sign-open: false #签名机制是否开启(true或false)
 
 jwt:
   header: Authorization   #http请求头所需要的字段
@@ -8,10 +8,10 @@ jwt:
   expiration: 604800      #7天 单位:秒
   auth-path: auth         #认证请求的路径
   md5-key: randomKey      #md5加密混淆key
-  ignore-url: /user/register,/user/check_username #忽略列表
+
 
 server:
-  port: 80 #项目端口
+  port: 8083 #项目端口
 
 mybatis-plus:
   mapper-locations: classpath*:com/stylefeng/guns/rest/**/mapping/*.xml
@@ -29,10 +29,13 @@ mybatis-plus:
 
 spring:
   application:
-    name: meeting-gateway
+    name: meeting-user
   dubbo:
     server: true
     registry: zookeeper://localhost:2181
+    protocol:
+     name: dubbo
+     port: 20881
   datasource:
       url: jdbc:mysql://127.0.0.1:3306/guns_rest?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
       username: root

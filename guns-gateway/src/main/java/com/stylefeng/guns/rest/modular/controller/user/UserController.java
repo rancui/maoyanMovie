@@ -1,4 +1,4 @@
-package com.stylefeng.guns.rest.modular.user;
+package com.stylefeng.guns.rest.modular.controller.user;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.stylefeng.guns.api.user.UserAPI;
@@ -6,13 +6,11 @@ import com.stylefeng.guns.api.user.model.UserModel;
 import com.stylefeng.guns.api.user.vo.UserInfoVo;
 import com.stylefeng.guns.rest.common.CurrentUser;
 import com.stylefeng.guns.rest.common.ServerResponse;
-import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/user/")
@@ -20,10 +18,6 @@ public class UserController {
 
     @Reference(interfaceClass = UserAPI.class)
     private UserAPI userAPI;
-
-    public ServerResponse login(HttpSession session,String username,String password){
-
-    }
 
     //用户注册
     @PostMapping("register")
@@ -67,6 +61,7 @@ public class UserController {
     }
 
     //获取用户信息
+    @GetMapping("get_user_info")
     public ServerResponse getUserInfo(){
         String userId = CurrentUser.getCurrentUser();
         if(userId!=null||userId.trim().length()>0){
@@ -84,6 +79,7 @@ public class UserController {
 
 
     //更新个人信息
+    @PostMapping("update_user_info")
     public ServerResponse updateUserInfo(UserInfoVo userInfoVo){
         String userId = CurrentUser.getCurrentUser();
         if(userId!=null||userId.trim().length()>0){
