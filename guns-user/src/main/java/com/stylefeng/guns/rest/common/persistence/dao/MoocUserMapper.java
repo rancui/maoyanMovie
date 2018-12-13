@@ -1,6 +1,6 @@
 package com.stylefeng.guns.rest.common.persistence.dao;
 
-import com.stylefeng.guns.rest.common.persistence.model.MoocUserT;
+import com.stylefeng.guns.rest.common.persistence.model.MoocUser;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author rancui
- * @since 2018-12-11
+ * @since 2018-12-12
  */
-public interface MoocUserTMapper extends BaseMapper<MoocUserT> {
+public interface MoocUserMapper extends BaseMapper<MoocUser> {
 
 }
