@@ -45,7 +45,7 @@ public class DefaultFastjsonConfig {
         FastJsonConfig fastJsonConfig = new FastJsonConfig();
         fastJsonConfig.setSerializerFeatures(
                 SerializerFeature.PrettyFormat,
-                SerializerFeature.WriteMapNullValue,
+//                SerializerFeature.WriteMapNullValue,
                 SerializerFeature.WriteEnumUsingToString
         );
         fastJsonConfig.setDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -58,7 +58,7 @@ public class DefaultFastjsonConfig {
             }
         };
         fastJsonConfig.setCharset(Charset.forName("utf-8"));
-        fastJsonConfig.setSerializeFilters(valueFilter);
+//        fastJsonConfig.setSerializeFilters(valueFilter);
 
         //解决Long转json精度丢失的问题
         SerializeConfig serializeConfig = SerializeConfig.globalInstance;

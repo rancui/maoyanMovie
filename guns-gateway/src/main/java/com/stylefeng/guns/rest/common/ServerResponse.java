@@ -1,28 +1,19 @@
 package com.stylefeng.guns.rest.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Data;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL )
+@Data
 public class ServerResponse<T> implements Serializable {
 
     private int status;
     private String msg;
     private T data;
+    private String imgPre;
 
-    public int getStatus() {
-        return status;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public T getData() {
-        return data;
-    }
 
     private ServerResponse(int status) {
         this.status = status;
@@ -48,7 +39,12 @@ public class ServerResponse<T> implements Serializable {
         this.msg = msg;
         this.data = data;
     }
-
+    private ServerResponse(int status, String imgPre,String msg, T data) {
+        this.status = status;
+        this.imgPre = imgPre;
+        this.msg = msg;
+        this.data = data;
+    }
     //返回成功
     public static <T> ServerResponse<T> createSuccess() {
         return new ServerResponse(Const.ResponseCode.SUCCESS.getCode());
@@ -61,6 +57,9 @@ public class ServerResponse<T> implements Serializable {
     }
     public static <T> ServerResponse<T> createSuccessMsgData(String msg, T data){
         return new ServerResponse(Const.ResponseCode.SUCCESS.getCode(),msg,data);
+    }
+    public static <T> ServerResponse<T> createSuccessImgPreData(String imgPre, String msg, T data){
+        return new ServerResponse(Const.ResponseCode.SUCCESS.getCode(),imgPre,msg,data);
     }
 
     //返回失败
@@ -80,12 +79,11 @@ public class ServerResponse<T> implements Serializable {
     public static <T> ServerResponse<T> createErrorMsgData(String msg, T data){
         return new ServerResponse(Const.ResponseCode.ERROR.getCode(),msg,data);
     }
-
-
-    @JsonIgnore
-    public  boolean isSuccess(){
-        return this.status == Const.ResponseCode.SUCCESS.getCode();
+    public static <T> ServerResponse<T> createErrorImgPreData(String imgPre, String msg,T data){
+        return new ServerResponse(Const.ResponseCode.ERROR.getCode(),imgPre,msg,data);
     }
+
+
 
 
 }

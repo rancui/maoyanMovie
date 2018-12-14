@@ -1,4 +1,4 @@
-package com.stylefeng.guns.rest.modular.vo.film;
+package com.stylefeng.guns.api.film.vo;
 
 import lombok.Data;
 
@@ -14,7 +14,7 @@ public class FilmIndexVo {
     private FilmVo soonFilms;//即将上映的电影
     private List<FilmInfoVo> boxRanking;//票房排行榜
     private List<FilmInfoVo> expectRanking;//受欢迎榜单
-    private List<FilmIndexVo> top100Films;//top100的电影
+    private List<FilmInfoVo> top100Films;//top100的电影
 
 
 

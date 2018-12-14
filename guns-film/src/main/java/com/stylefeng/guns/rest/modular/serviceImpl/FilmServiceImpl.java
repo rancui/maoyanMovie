@@ -32,6 +32,7 @@ public class FilmServiceImpl implements FilmServiceAPI {
     public List<BannerVo> getBanners() {
         List<MoocBanner> bannerList = moocBannerMapper.selectList(null);
         List<BannerVo> bannerVoList = Lists.newArrayList();
+
         if(CollectionUtils.isNotEmpty(bannerList)){
             for(MoocBanner moocBanner:bannerList){
                 BannerVo bannerVo = new BannerVo();
@@ -72,7 +73,7 @@ public class FilmServiceImpl implements FilmServiceAPI {
 
     //热映影片
     @Override
-    public FilmVo gotHotFilms(boolean isLimit, int nums) {
+    public FilmVo getHotFilms(boolean isLimit, int nums) {
         FilmVo filmVo = new FilmVo();
         //热映影片的限制条件
         EntityWrapper entityWrapper = new EntityWrapper();
@@ -97,7 +98,7 @@ public class FilmServiceImpl implements FilmServiceAPI {
 
     //即将上映
     @Override
-    public FilmVo gotSoonFilms(boolean isLimit, int nums) {
+    public FilmVo getSoonFilms(boolean isLimit, int nums) {
         FilmVo filmVo = new FilmVo();
         //即将上映影片的限制条件
         EntityWrapper entityWrapper = new EntityWrapper();
@@ -138,13 +139,27 @@ public class FilmServiceImpl implements FilmServiceAPI {
     //受欢迎的电影
     @Override
     public List<FilmInfoVo> getExpectRanking() {
-        return null;
+        EntityWrapper entityWrapper = new EntityWrapper();
+        entityWrapper.eq("film_status","2");
+
+        Page<MoocFilm> moocFilmPage = new Page<>(1,10,"film_preSaleNum");
+        List<MoocFilm> moocFilmList = moocFilmMapper.selectPage(moocFilmPage,entityWrapper);
+
+        List<FilmInfoVo> filmInfoVoList = assmbleFilmInfoVo(moocFilmList);
+        return filmInfoVoList;
     }
 
     //TOP100
     @Override
     public List<FilmInfoVo> getTop100Films() {
-        return null;
+        EntityWrapper entityWrapper = new EntityWrapper();
+        entityWrapper.eq("film_status","2");
+
+        Page<MoocFilm> moocFilmPage = new Page<>(1,10,"film_score");
+        List<MoocFilm> moocFilmList = moocFilmMapper.selectPage(moocFilmPage,entityWrapper);
+
+        List<FilmInfoVo> filmInfoVoList = assmbleFilmInfoVo(moocFilmList);
+        return filmInfoVoList;
     }
 
 }
