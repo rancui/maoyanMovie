@@ -13,6 +13,9 @@ public class ServerResponse<T> implements Serializable {
     private String msg;
     private T data;
     private String imgPre;
+    private int pageNum;
+    private int totalPage;
+
 
 
     private ServerResponse(int status) {
@@ -45,6 +48,15 @@ public class ServerResponse<T> implements Serializable {
         this.msg = msg;
         this.data = data;
     }
+
+    private ServerResponse(int status,int pageNum,int totalPage,String imgPre,T data){
+        this.status = status;
+        this.pageNum = pageNum;
+        this.totalPage = totalPage;
+        this.imgPre = imgPre;
+        this.data = data;
+    }
+
     //返回成功
     public static <T> ServerResponse<T> createSuccess() {
         return new ServerResponse(Const.ResponseCode.SUCCESS.getCode());
@@ -61,6 +73,10 @@ public class ServerResponse<T> implements Serializable {
     public static <T> ServerResponse<T> createSuccessImgPreData(String imgPre, String msg, T data){
         return new ServerResponse(Const.ResponseCode.SUCCESS.getCode(),imgPre,msg,data);
     }
+    public static <T> ServerResponse<T> creatSuccessPageInfo(int pageNum,int totalPage,String imgPre,T data){
+        return new ServerResponse<>(Const.ResponseCode.SUCCESS.getCode(),pageNum,totalPage,imgPre,data);
+    }
+
 
     //返回失败
     public static <T> ServerResponse<T> createError(){

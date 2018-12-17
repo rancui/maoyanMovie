@@ -43,9 +43,9 @@ public class FilmController {
         //获取banners
         filmIndexVo.setBannerVoList(filmServiceAPI.getBanners());
         //获取正在热映的电影
-        filmIndexVo.setHotFilms(filmServiceAPI.getHotFilms(true,8));
+        filmIndexVo.setHotFilms(filmServiceAPI.getHotFilms(true,8,1,1,99,99,99));
         //即将上映的电影
-        filmIndexVo.setSoonFilms(filmServiceAPI.getSoonFilms(true,10));
+        filmIndexVo.setSoonFilms(filmServiceAPI.getSoonFilms(true,8,1,1,99,99,99));
         //票房排行榜
         filmIndexVo.setBoxRanking(filmServiceAPI.getBoxRanking());
         //获取受欢迎榜单
@@ -172,6 +172,29 @@ public class FilmController {
 
 
 
+    @GetMapping("film_list")
+    public ServerResponse getFilmList(FilmListVo filmListVo){
+
+        FilmVo filmVo = new FilmVo();
+
+        //根据showType判断影片查询类型 1:正在热映 2：即将上映 3：经典影片
+           switch (filmListVo.getShowType()){
+               case 1:
+                   filmVo = filmServiceAPI.getHotFilms(false,filmListVo.getPageSize(),filmListVo.getPageNum(),filmListVo.getSortId(),filmListVo.getSourceId(),filmListVo.getYearId(),filmListVo.getCategoryId());
+                   break;
+               case 2:
+                   filmVo = filmServiceAPI.getSoonFilms(false,filmListVo.getPageSize(),filmListVo.getPageNum(),filmListVo.getSortId(),filmListVo.getSourceId(),filmListVo.getYearId(),filmListVo.getCategoryId());
+                   break;
+               case 3:
+                   filmVo = filmServiceAPI.getClassicFilms(false,filmListVo.getPageSize(),filmListVo.getPageNum(),filmListVo.getSortId(),filmListVo.getSourceId(),filmListVo.getYearId(),filmListVo.getCategoryId());
+               default:
+                   filmVo = filmServiceAPI.getHotFilms(true,filmListVo.getPageSize(),filmListVo.getPageNum(),filmListVo.getSortId(),filmListVo.getSourceId(),filmListVo.getYearId(),filmListVo.getCategoryId());
+                   break;
+           }
+
+        return ServerResponse.creatSuccessPageInfo(filmVo.getPageNum(),filmVo.getTotalPage(),IMG_PRE,filmVo.getFilmInfoVoList());
+
+    }
 
 
 
