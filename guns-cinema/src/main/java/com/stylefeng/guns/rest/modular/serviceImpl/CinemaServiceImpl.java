@@ -12,6 +12,7 @@ import com.stylefeng.guns.rest.common.persistence.model.Brand;
 import com.stylefeng.guns.rest.common.persistence.model.Cinema;
 import com.stylefeng.guns.rest.common.persistence.model.Hall;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.MethodWrapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -191,7 +192,16 @@ public class CinemaServiceImpl implements CinemaServiceAPI {
      * @return
      */
     public CinemaInfoVo getCinemaInfoById(int cinemaId) {
-        return null;
+
+        Cinema cinema = cinemaMapper.selectById(cinemaId);
+        CinemaInfoVo cinemaInfoVo = new CinemaInfoVo();
+        cinemaInfoVo.setImgUrl(cinema.getImgAddress());
+        cinemaInfoVo.setCinemaPhone(cinema.getCinemaPhone());
+        cinemaInfoVo.setCinemaName(cinema.getCinemaName());
+        cinemaInfoVo.setCinemaId(cinema.getUuid());
+        cinemaInfoVo.setCinemaAddress(cinema.getCinemaAddress());
+
+        return cinemaInfoVo;
     }
 
     /**
