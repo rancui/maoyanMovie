@@ -13,6 +13,7 @@ public class FilmInfoVo implements Serializable {
     private String filmLength;
     private String filmType;
     private String filmCategory;
+    private String actors;
     private String imgAddress;
     private List<FilmFieldVo> filmFields;
 

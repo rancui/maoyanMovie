@@ -209,8 +209,11 @@ public class CinemaServiceImpl implements CinemaServiceAPI {
      * @param cinemaId
      * @return
      */
-    public FilmInfoVo getFilmInfoById(int cinemaId) {
-        return null;
+    public List<FilmInfoVo> getFilmInfoById(int cinemaId) {
+
+       List<FilmInfoVo> filmInfoVoList = fieldMapper.getFilmInfos(cinemaId);
+
+        return filmInfoVoList;
     }
 
     /**

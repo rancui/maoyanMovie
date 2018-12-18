@@ -14,4 +14,45 @@
         <result column="price" property="price" />
     </resultMap>
 
+    <resultMap id="FilmInfoMap" type="com.stylefeng.guns.api.cinema.vo.FilmInfoVo">
+        <result column="film_id" property="filmId" />
+        <result column="film_name" property="filmName" />
+        <result column="film_language" property="filmType" />
+        <result column="film_cats" property="filmCategory" />
+        <result column="actors" property="actors" />
+        <result column="img_address" property="imgAddress" />
+        <result column="film_length" property="filmLength" />
+        <collection property="filmFields" ofType="com.stylefeng.guns.api.cinema.vo.FilmFieldVo">
+            <result column="UUID" property="fieldId" />
+            <result column="begin_time" property="beginTime" />
+            <result column="end_time" property="endTime" />
+            <result column="film_language" property="language" />
+            <result column="hall_name" property="hallName" />
+            <result column="price" property="price" />
+        </collection>
+    </resultMap>
+
+    <!--一对多的查询-->
+    <select id="getFilmInfos" parameterType="int" resultMap="FilmInfoMap">
+        SELECT
+            info.film_id,
+            info.img_address,
+            info.film_name,
+            info.film_length,
+            info.film_language,
+            info.film_cats,
+            info.actors,
+            info.UUID,
+            f.hall_name,
+            f.UUID,
+            f.price,
+            f.begin_time,
+            f.end_time
+        FROM hall_film_info info
+        left JOIN field f
+        on info.film_id = f.film_id
+        and f.cinema_id = #{cinemaId}
+
+    </select>
+
 </mapper>

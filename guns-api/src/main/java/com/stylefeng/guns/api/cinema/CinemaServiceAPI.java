@@ -48,7 +48,7 @@ public interface CinemaServiceAPI {
      * @param cinemaId
      * @return
      */
-     FilmInfoVo getFilmInfoById(int cinemaId);
+    List<FilmInfoVo> getFilmInfoById(int cinemaId);
     /**
      * 根据放映场次ID获取放映信息
      * @param fieldId
