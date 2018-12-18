@@ -7,7 +7,10 @@ import com.google.common.collect.Lists;
 import com.stylefeng.guns.api.cinema.CinemaServiceAPI;
 import com.stylefeng.guns.api.cinema.vo.*;
 import com.stylefeng.guns.rest.common.persistence.dao.*;
+import com.stylefeng.guns.rest.common.persistence.model.Area;
+import com.stylefeng.guns.rest.common.persistence.model.Brand;
 import com.stylefeng.guns.rest.common.persistence.model.Cinema;
+import com.stylefeng.guns.rest.common.persistence.model.Hall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -82,7 +85,34 @@ public class CinemaServiceImpl implements CinemaServiceAPI {
      * @return
      */
     public List<BrandVo> getBrands(int brandId){
-        return null;
+        boolean flag = false;
+        Brand brand = brandMapper.selectById(brandId);
+
+        //判断brandId是否等于99（全部）
+        if(brandId==99||brand==null||brand.getUuid()==null){
+            flag = true;
+        }
+
+        List<Brand> brandList = brandMapper.selectList(null);
+        List<BrandVo> brandVoList = Lists.newArrayList();
+        for(Brand brandItem:brandList){
+            BrandVo brandVo = new BrandVo();
+            brandVo.setBrandName(brandItem.getShowName());
+            brandVo.setBrandId(brandItem.getUuid());
+            //如果flag为true，则需要99，如果为false，则匹配上的内容为active
+            if(flag){
+                if(brandItem.getUuid()==99){
+                    brandVo.setActive(true);
+                }
+            }else {
+                if(brandItem.getUuid()==brandId){
+                    brandVo.setActive(true);
+                }
+            }
+            brandVoList.add(brandVo);
+        }
+
+        return brandVoList;
     }
 
     /**
@@ -91,7 +121,32 @@ public class CinemaServiceImpl implements CinemaServiceAPI {
      * @return
      */
     public List<AreaVo> getAreas(int areaId){
-        return null;
+        boolean flag = false;
+        Area area = areaMapper.selectById(areaId);
+        //判断areaId是否等于99（全部）
+        if(areaId==99||area==null||area.getUuid()==null){
+            flag = true;
+        }
+
+        List<Area> areaList = areaMapper.selectList(null);
+        List<AreaVo> areaVoList = Lists.newArrayList();
+        for(Area areaItem:areaList){
+            AreaVo areaVo = new AreaVo();
+            areaVo.setAreaName(areaItem.getShowName());
+            areaVo.setAreaId(areaItem.getUuid());
+            //如果flag为true，则需要99，如果为false，则匹配上的内容为active
+            if(flag){
+                if(areaItem.getUuid()==99){
+                    areaVo.setActive(true);
+                }
+            }else {
+                if(areaItem.getUuid()==areaId){
+                    areaVo.setActive(true);
+                }
+            }
+            areaVoList.add(areaVo);
+        }
+        return areaVoList;
     }
 
 
@@ -101,7 +156,32 @@ public class CinemaServiceImpl implements CinemaServiceAPI {
      * @return
      */
     public List<HallTypeVo> getHallType(int hallType) {
-        return null;
+        boolean flag = false;
+        Hall hall = hallMapper.selectById(hallType);
+        //判断hallType是否等于99（全部）
+        if(hallType==99||hall==null||hall.getUuid()==null){
+            flag = true;
+        }
+
+        List<Hall> hallList = hallMapper.selectList(null);
+        List<HallTypeVo> hallTypeVoList = Lists.newArrayList();
+        for(Hall hallItem:hallList){
+            HallTypeVo hallTypeVo = new HallTypeVo();
+            hallTypeVo.setHallTypeName(hallItem.getShowName());
+            hallTypeVo.setHallTypeId(hallItem.getUuid());
+            //如果flag为true，则需要99，如果为false，则匹配上的内容为active
+            if(flag){
+                if(hallItem.getUuid()==99){
+                    hallTypeVo.setActive(true);
+                }
+            }else {
+                if(hallItem.getUuid()==hallType){
+                    hallTypeVo.setActive(true);
+                }
+            }
+            hallTypeVoList.add(hallTypeVo);
+        }
+        return hallTypeVoList;
     }
 
 
