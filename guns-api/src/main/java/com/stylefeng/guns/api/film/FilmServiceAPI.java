@@ -38,6 +38,23 @@ public interface FilmServiceAPI {
     //年代条件
     List<YearVo> getYears();
 
+    //根据影片ID或者名称获取影片信息
+    FilmDetailVo getFilmDetail(int searchType,String searchParam);
+
+    //获取影片描述信息
+    FilmDescVo getFilmDescInfo(String filmId);
+
+    //获取图片信息
+    ImgVo getImgInfo(String filmId);
+
+    //获取导演信息
+    ActorVo getDirectorInfo(String filmId);
+
+    //获取演员信息
+    List<ActorVo> getActors(String filmId);
+
+
+
 
 
 

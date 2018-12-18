@@ -1,16 +1,19 @@
 package com.stylefeng.guns.rest.modular.controller.film;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.dubbo.rpc.RpcContext;
 import com.google.common.collect.Lists;
+import com.stylefeng.guns.api.film.FilmAsyncServiceAPI;
 import com.stylefeng.guns.api.film.FilmServiceAPI;
 import com.stylefeng.guns.api.film.vo.*;
 import com.stylefeng.guns.rest.common.ServerResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/film/")
@@ -20,6 +23,9 @@ public class FilmController {
 
     @Reference(interfaceClass = FilmServiceAPI.class )
     private FilmServiceAPI filmServiceAPI;
+    @Reference(interfaceClass = FilmAsyncServiceAPI.class,async = true)
+    private FilmAsyncServiceAPI filmAsyncServiceAPI;
+
 
     /**
      * API网关：
@@ -193,6 +199,60 @@ public class FilmController {
            }
 
         return ServerResponse.creatSuccessPageInfo(filmVo.getPageNum(),filmVo.getTotalPage(),IMG_PRE,filmVo.getFilmInfoVoList());
+
+    }
+
+    /**
+     * 影片详情查询
+     * @param searchParam
+     * @param searchType
+     * @return
+     */
+    @GetMapping("query_film_detail/{searchParam}")
+    public ServerResponse queryFilmDetail(@PathVariable("searchParam") String searchParam, int searchType) throws ExecutionException, InterruptedException {
+
+        //根据searchType，判断查询类型
+        FilmDetailVo filmDetailVo =  filmServiceAPI.getFilmDetail(searchType,searchParam);
+        if(filmDetailVo==null){
+            return ServerResponse.createErrorMsg("没有可查询的影片");
+        }else if (filmDetailVo.getFilmId()==null|| filmDetailVo.getFilmId().trim().length()==0){
+            return ServerResponse.createErrorMsg("没有可查询的影片");
+        }
+        String filmId = filmDetailVo.getFilmId();
+
+        //获取影片描述信息（Dubbo的异步获取）
+         filmAsyncServiceAPI.getFilmDescInfo(filmId);
+        Future<FilmDescVo> filmDescVoFuture = RpcContext.getContext().getFuture();
+
+        //获取图片信息（Dubbo的异步获取）
+        filmAsyncServiceAPI.getImgInfo(filmId);
+        Future<ImgVo> imgVoFuture = RpcContext.getContext().getFuture();
+
+        //获取导演信息（Dubbo的异步获取）
+        filmAsyncServiceAPI.getDirectorInfo(filmId);
+        Future<ActorVo> directorFuture = RpcContext.getContext().getFuture();
+
+        //获取演员信息（Dubbo的异步获取）
+        filmAsyncServiceAPI.getActors(filmId);
+        Future<List<ActorVo>> actorVoFuture = RpcContext.getContext().getFuture();
+
+
+
+        //组织ActorRequestVO （info04字段内的内容）
+        ActorRequestVo actorRequestVO = new ActorRequestVo();
+        actorRequestVO.setActors(actorVoFuture.get());
+        actorRequestVO.setDirector(directorFuture.get());
+
+        //组织InfoRequstVO （应答报文中的info04字段）
+        InfoRequestVo infoRequestVo = new InfoRequestVo();
+        infoRequestVo.setActors(actorRequestVO);
+        infoRequestVo.setBiography(filmDescVoFuture.get().getBiography());
+        infoRequestVo.setFilmId(filmId);
+        infoRequestVo.setImgVO(imgVoFuture.get());
+
+        filmDetailVo.setInfo04(infoRequestVo);
+
+        return ServerResponse.createSuccessImgPreData(IMG_PRE,null,filmDetailVo);
 
     }
 

@@ -23,11 +23,16 @@ public class FilmServiceImpl implements FilmServiceAPI {
     @Autowired
     private MoocFilmMapper moocFilmMapper;
     @Autowired
+    private MoocFilmInfoMapper moocFilmInfoMapper;
+    @Autowired
     private MoocCategoryDictMapper moocCategoryDictMapper;
     @Autowired
     private MoocSourceDictMapper moocSourceDictMapper;
     @Autowired
     private MoocYearDictMapper moocYearDictMapper;
+    @Autowired
+    private MoocActorMapper moocActorMapper;
+
 
     /**
      * 首页Banner
@@ -291,18 +296,80 @@ public class FilmServiceImpl implements FilmServiceAPI {
         return yearVoList;
     }
 
+    /**
+     * 影片详情查询
+     * @param searchType
+     * @param searchParam
+     * @return
+     */
+    @Override
+    public FilmDetailVo getFilmDetail(int searchType, String searchParam) {
+
+        FilmDetailVo filmDetailVo = null;
+
+        //根据searchType，判断查询类型. 1-按名称 2-按ID
+        if(searchType==1){
+            filmDetailVo = moocFilmMapper.getFilmDetailByName("%"+searchParam+"%");
+        }else {
+            filmDetailVo = moocFilmMapper.getFilmDetailByUUId(searchParam);
+        }
+
+        return filmDetailVo;
+    }
 
 
+    private MoocFilmInfo getFilmInfo(String filmId){
+        MoocFilmInfo moocFilmInfo = new MoocFilmInfo();
+        moocFilmInfo.setFilmId(filmId);
+        moocFilmInfo = moocFilmInfoMapper.selectOne(moocFilmInfo);
+
+        return moocFilmInfo;
+    }
 
 
+    @Override
+    public FilmDescVo getFilmDescInfo(String filmId) {
 
+        MoocFilmInfo moocFilmInfo= getFilmInfo(filmId);
 
+        FilmDescVo filmDescVo = new FilmDescVo();
+        filmDescVo.setFilmId(filmId);
+        filmDescVo.setBiography(moocFilmInfo.getBiography());
+        return filmDescVo;
+    }
 
+    @Override
+    public ImgVo getImgInfo(String filmId) {
+        MoocFilmInfo moocFilmInfo= getFilmInfo(filmId);
+        ImgVo imgVo = new ImgVo();
+        String[] filmImgs = moocFilmInfo.getFilmImgs().split(",");
+        imgVo.setMainImg(filmImgs[0]);
+        imgVo.setImg01(filmImgs[1]);
+        imgVo.setImg01(filmImgs[2]);
+        imgVo.setImg01(filmImgs[3]);
+        imgVo.setImg01(filmImgs[4]);
+        return imgVo;
+    }
 
+    @Override
+    public ActorVo getDirectorInfo(String filmId) {
+        MoocFilmInfo moocFilmInfo = getFilmInfo(filmId);
+        //获取导演编号
+        Integer directorId = moocFilmInfo.getDirectorId();
+        MoocActor moocActor = moocActorMapper.selectById(directorId);
 
+        ActorVo actorVo = new ActorVo();
+        actorVo.setImgAddress(moocActor.getActorImg());
+        actorVo.setDirectorName(moocActor.getActorName());
 
+        return actorVo;
+    }
 
+    @Override
+    public List<ActorVo> getActors(String filmId) {
 
+        return moocActorMapper.getActors(filmId);
+    }
 
 
 }

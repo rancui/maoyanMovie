@@ -18,5 +18,40 @@
         <result column="film_time" property="filmTime" />
         <result column="film_status" property="filmStatus" />
     </resultMap>
+    <select id="getFilmDetailByName" parameterType="string" resultType="com.stylefeng.guns.api.film.vo.FilmDetailVo">
+        SELECT
+            film.uuid AS filmId,
+            film.film_name AS filmName,
+            info.film_en_name AS filmEnName,
+            film.img_address AS imgAddress,
+            info.film_score AS score,
+            info.film_score_num AS scoreNum,
+            film.film_box_office AS totalBox,
+            ( SELECT GROUP_CONCAT(show_name,",") FROM mooc_category_dict t
+              WHERE find_in_set(t.UUID,(SELECT replace(trim(BOTH "#" FROM film_cats),"#",",") FROM mooc_film t WHERE t.UUID=film.UUID))) AS info01,
+            concat((SELECT show_name FROM mooc_source_dict t WHERE t.UUID = film.UUID),'/',info.film_length,'分钟') info02,
+            concat(film.film_time,(SELECT show_name FROM mooc_source_dict t WHERE t.UUID = film.UUID),"上映") info03
+        FROM mooc_film film, mooc_film_info info
+        WHERE film.UUID = info.film_id
+        AND  film.film_name like #{filmName}
+    </select>
+    <select id="getFilmDetailByUUId" parameterType="string" resultType="com.stylefeng.guns.api.film.vo.FilmDetailVo">
+        SELECT
+            film.uuid AS filmId,
+            film.film_name AS filmName,
+            info.film_en_name AS filmEnName,
+            film.img_address AS imgAddress,
+            info.film_score AS score,
+            info.film_score_num AS scoreNum,
+            film.film_box_office AS totalBox,
+            ( SELECT GROUP_CONCAT(show_name,",") FROM mooc_category_dict t
+              WHERE find_in_set(t.UUID,(SELECT replace(trim(BOTH "#" FROM film_cats),"#",",") FROM mooc_film t WHERE t.UUID=film.UUID))) AS info01,
+            concat((SELECT show_name FROM mooc_source_dict t WHERE t.UUID = film.UUID),'/',info.film_length,'分钟') info02,
+            concat(film.film_time,(SELECT show_name FROM mooc_source_dict t WHERE t.UUID = film.UUID),"上映") info03
+        FROM mooc_film film, mooc_film_info info
+        WHERE film.UUID = info.film_id
+        AND  film.UUID= #{uuid}
+
+    </select>
 
 </mapper>
