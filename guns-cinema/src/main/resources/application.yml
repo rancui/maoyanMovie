@@ -35,7 +35,7 @@ spring:
     registry: zookeeper://localhost:2181
     protocol:
      name: dubbo
-     port: 20882
+     port: 20883
   datasource:
       url: jdbc:mysql://127.0.0.1:3306/guns_rest?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
       username: root
@@ -46,4 +46,4 @@ logging:
   level.root: info
   level.com.stylefeng: debug
   path: logs/
-  file: guns-film.log
+  file: guns-cinema.log
