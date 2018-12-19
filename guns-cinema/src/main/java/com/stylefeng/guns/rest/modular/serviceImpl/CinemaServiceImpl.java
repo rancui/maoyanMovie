@@ -8,16 +8,21 @@ import com.stylefeng.guns.api.cinema.CinemaServiceAPI;
 import com.stylefeng.guns.api.cinema.vo.*;
 import com.stylefeng.guns.rest.common.persistence.dao.*;
 import com.stylefeng.guns.rest.common.persistence.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.MethodWrapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 
+
 @Component
-@Service(interfaceClass =CinemaServiceAPI.class )
+@Service(interfaceClass =CinemaServiceAPI.class,executes = 10)
 public class CinemaServiceImpl implements CinemaServiceAPI {
+
+    public static Logger logger = LoggerFactory.getLogger(CinemaServiceImpl.class);
+
     @Autowired
     private AreaMapper areaMapper;
     @Autowired
@@ -82,7 +87,10 @@ public class CinemaServiceImpl implements CinemaServiceAPI {
      * @param brandId
      * @return
      */
+
     public List<BrandVo> getBrands(int brandId){
+
+        System.out.println("============="+brandId+"=============");
         boolean flag = false;
         Brand brand = brandMapper.selectById(brandId);
 

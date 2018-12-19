@@ -20,7 +20,7 @@ public class CinemaController {
 
     public static final String IMG_PRE = "//www.rc.com";
 
-    @Reference(interfaceClass = CinemaServiceAPI.class,cache = "lru")
+    @Reference(interfaceClass = CinemaServiceAPI.class,connections = 10,cache = "lru")
     private CinemaServiceAPI cinemaServiceAPI;
 
 
