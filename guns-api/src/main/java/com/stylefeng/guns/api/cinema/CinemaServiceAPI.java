@@ -54,7 +54,7 @@ public interface CinemaServiceAPI {
      * @param fieldId
      * @return
      */
-     FilmFieldVo getFilmFieldInfo(int fieldId);
+     HallInfoVo getFilmFieldInfo(int fieldId);
 
     /**
      * 根据放映场次查询播放的电影编号，然后根据电影编号获取对应的电影信息

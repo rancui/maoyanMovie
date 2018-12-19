@@ -7,10 +7,7 @@ import com.google.common.collect.Lists;
 import com.stylefeng.guns.api.cinema.CinemaServiceAPI;
 import com.stylefeng.guns.api.cinema.vo.*;
 import com.stylefeng.guns.rest.common.persistence.dao.*;
-import com.stylefeng.guns.rest.common.persistence.model.Area;
-import com.stylefeng.guns.rest.common.persistence.model.Brand;
-import com.stylefeng.guns.rest.common.persistence.model.Cinema;
-import com.stylefeng.guns.rest.common.persistence.model.Hall;
+import com.stylefeng.guns.rest.common.persistence.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.MethodWrapper;
 import org.springframework.stereotype.Component;
@@ -43,15 +40,15 @@ public class CinemaServiceImpl implements CinemaServiceAPI {
     public Page<CinemaVo> getCinemas(CinemaQueryVo cinemaQueryVo){
 
         Page<Cinema> page = new Page<>(cinemaQueryVo.getPageNum(),cinemaQueryVo.getPageSize());
-        EntityWrapper<Cinema> entityWrapper = new EntityWrapper<Cinema>();
 
-        if(cinemaQueryVo.getBrandId()!=90){
+        EntityWrapper<Cinema> entityWrapper = new EntityWrapper<>();
+        if(cinemaQueryVo.getBrandId()!=99){
             entityWrapper.eq("brand_id",cinemaQueryVo.getBrandId());
         }
-        if(cinemaQueryVo.getAreaId()!=90){
+        if(cinemaQueryVo.getAreaId()!=99){
             entityWrapper.eq("area_id",cinemaQueryVo.getAreaId());
         }
-        if(cinemaQueryVo.getBrandId()!=90){
+        if(cinemaQueryVo.getBrandId()!=99){
             entityWrapper.like("hall_ids","%#"+cinemaQueryVo.getHallType()+"#%");
         }
 
@@ -221,8 +218,9 @@ public class CinemaServiceImpl implements CinemaServiceAPI {
      * @param fieldId
      * @return
      */
-    public FilmFieldVo getFilmFieldInfo(int fieldId) {
-        return null;
+    public HallInfoVo getFilmFieldInfo(int fieldId) {
+        HallInfoVo hallInfoVo = fieldMapper.getHallInfo(fieldId);
+        return hallInfoVo;
     }
 
     /**
@@ -231,7 +229,9 @@ public class CinemaServiceImpl implements CinemaServiceAPI {
      * @return
      */
     public FilmInfoVo getFilmInfoByFieldId(int fieldId) {
-        return null;
+
+        FilmInfoVo filmInfoVo = fieldMapper.getFilmInfoByFieldId(fieldId);
+        return filmInfoVo;
     }
 
 

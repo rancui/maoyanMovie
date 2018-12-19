@@ -14,6 +14,7 @@
         <result column="price" property="price" />
     </resultMap>
 
+    <!--一对多的查询-->
     <resultMap id="FilmInfoMap" type="com.stylefeng.guns.api.cinema.vo.FilmInfoVo">
         <result column="film_id" property="filmId" />
         <result column="film_name" property="filmName" />
@@ -31,8 +32,6 @@
             <result column="price" property="price" />
         </collection>
     </resultMap>
-
-    <!--一对多的查询-->
     <select id="getFilmInfos" parameterType="int" resultMap="FilmInfoMap">
         SELECT
             info.film_id,
@@ -42,7 +41,6 @@
             info.film_language,
             info.film_cats,
             info.actors,
-            info.UUID,
             f.hall_name,
             f.UUID,
             f.price,
@@ -52,6 +50,36 @@
         left JOIN field f
         on info.film_id = f.film_id
         and f.cinema_id = #{cinemaId}
+
+    </select>
+
+    <select id="getHallInfo" parameterType="int" resultType="com.stylefeng.guns.api.cinema.vo.HallInfoVo">
+        SELECT
+            f.UUID AS hallFieldId,
+            h.show_name AS hallNAme,
+            f.price AS price,
+            h.seat_address AS seatFile
+        FROM
+            hall h,
+            field f
+        WHERE
+            f.hall_id = h.UUID
+          AND f.UUID = #{fieldId}
+    </select>
+    <select id="getFilmInfoByFieldId" parameterType="int" resultType="com.stylefeng.guns.api.cinema.vo.FilmInfoVo">
+        SELECT
+            f.`film_id` AS filmId,
+            info.`film_name` AS filmName,
+            info.`film_length` AS filmLength,
+            info.`film_language` AS filmType,
+            info.`film_cats` AS filmCats,
+            info.`actors` AS actors,
+            info.`img_address` AS imgAddress
+        FROM
+            field f,
+            hall_film_info info
+        WHERE f.`film_id` = info.`film_id`
+        AND f.`UUID` = #{fieldId}
 
     </select>
 

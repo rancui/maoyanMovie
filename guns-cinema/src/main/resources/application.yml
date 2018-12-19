@@ -11,7 +11,7 @@ jwt:
 
 
 server:
-  port: 8084 #项目端口
+  port: 8085 #项目端口
 
 mybatis-plus:
   mapper-locations: classpath*:com/stylefeng/guns/rest/**/mapping/*.xml
@@ -29,7 +29,7 @@ mybatis-plus:
 
 spring:
   application:
-    name: meeting-film
+    name: meeting-cinema
   dubbo:
     server: true
     registry: zookeeper://localhost:2181
