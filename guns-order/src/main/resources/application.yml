@@ -9,6 +9,11 @@ jwt:
   auth-path: auth         #认证请求的路径
   md5-key: randomKey      #md5加密混淆key
 
+ftp:
+  ip: 10.138.30.107
+  port: 2100
+  user-name: ftp
+  password: rancui
 
 server:
   port: 8086 #项目端口

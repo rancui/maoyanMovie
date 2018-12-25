@@ -243,6 +243,20 @@ public class CinemaServiceImpl implements CinemaServiceAPI {
     }
 
 
+    /**
+     * 返回订单模块所需内容
+     * @param fieldId
+     * @return
+     */
+    @Override
+    public OrderNeedVo getOrderNeed(Integer fieldId) {
+
+        OrderNeedVo orderNeedVo = new OrderNeedVo();
+        Field field = fieldMapper.selectById(fieldId);
+        orderNeedVo.setCinemaId(field.getCinemaId());
+        orderNeedVo.setFilmPrice(field.getPrice()+"");
+        return orderNeedVo;
+    }
 
 
 
