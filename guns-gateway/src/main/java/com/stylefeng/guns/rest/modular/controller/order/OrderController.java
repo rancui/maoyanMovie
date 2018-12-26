@@ -2,6 +2,7 @@ package com.stylefeng.guns.rest.modular.controller.order;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.google.common.collect.Lists;
 import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.api.order.vo.OrderVo;
 import com.stylefeng.guns.rest.common.CurrentUser;
@@ -12,13 +13,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/order/")
 public class OrderController {
 
-    @Reference(interfaceClass = OrderServiceAPI.class)
+    @Reference(interfaceClass = OrderServiceAPI.class,check = false,group ="order2018" )
     private OrderServiceAPI orderServiceAPI;
+
+    @Reference(interfaceClass = OrderServiceAPI.class,check = false,group ="order2017" )
+    private OrderServiceAPI orderServiceAPI2017;
     /**
      * 购票
      * @param fieldId
@@ -54,7 +61,12 @@ public class OrderController {
 
     }
 
-
+    /**
+     * 获取用户订单信息
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @PostMapping("get_order_info")
     public ServerResponse getOrderInfo(@RequestParam(value = "pageNum",required = false,defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",required = false,defaultValue = "10") int pageSize){
 
@@ -62,9 +74,20 @@ public class OrderController {
         String userId = CurrentUser.getCurrentUser();
         // 使用当前登陆人获取已经购买的订单
         if(userId!=null&& userId.trim().length()!=0){
-            Page<OrderVo> orderVoPage = orderServiceAPI.getOrderByUserId(Integer.parseInt(userId));
+//            Page<OrderVo> orderVoPage = orderServiceAPI.getOrderByUserId(Integer.parseInt(userId));
+//            return ServerResponse.creatSuccessPageInfo(pageNum,(int)orderVoPage.getPages(),null,orderVoPage.getRecords());
+            Page<OrderVo> orderVoPage2017 = orderServiceAPI2017.getOrderByUserId(Integer.parseInt(userId));
+            Page<OrderVo> orderVoPage2018 = orderServiceAPI.getOrderByUserId(Integer.parseInt(userId));
 
-            return ServerResponse.creatSuccessPageInfo(pageNum,(int)orderVoPage.getPages(),null,orderVoPage.getRecords());
+            //合并总页数
+            int totalPages = (int)(orderVoPage2017.getPages()+orderVoPage2018.getPages());
+            //合并订单列表
+//            List<OrderVo> orderVoList = new ArrayList<>();
+            List<OrderVo> orderVoList = Lists.newArrayList();
+            orderVoList.addAll(orderVoPage2017.getRecords());
+            orderVoList.addAll(orderVoPage2018.getRecords());
+
+            return ServerResponse.creatSuccessPageInfo(pageNum,totalPages,null,orderVoList);
         }
 
         return ServerResponse.createErrorMsg("用户未登录");

@@ -16,5 +16,59 @@
         <result column="order_user" property="orderUser" />
         <result column="order_status" property="orderStatus" />
     </resultMap>
+    <select id="getSeatPathByFieldId" parameterType="string" resultType="string">
+        select seat_address as seatAddress
+        from field f,hall h
+        where f.hall_id = h.UUID
+          and f.UUID = #{fieldId}
+    </select>
+    <select id="getOrderVOByUuid" parameterType="string" resultType="com.stylefeng.guns.api.order.vo.OrderVo">
+        select
+            o.UUID as orderId,
+            o.seats_name as seatsName,
+            o.order_price as orderPrice,
+            h.film_name as filmName,
+            f.begin_time as fieldTime,
+            c.cinema_name as cinemaName,
+            o.order_time AS orderTimestamp
+        from
+            order_2018 o,
+            field f,
+            cinema c,
+            hall_film_info h
+        where o.cinema_id = c.UUID
+          AND o.field_id = f.UUID
+          AND o.film_id = h.film_id
+          and o.UUID = #{orderId}
+    </select>
+
+
+    <select id="getOrdersByUserId" parameterType="int" resultType="com.stylefeng.guns.api.order.vo.OrderVo">
+        select
+            o.UUID as orderId,
+            h.film_name as  filmName,
+            f.begin_time as fieldTime,
+            ci.cinema_name AS cinemaName,
+            o.seats_name AS seatsName,
+            o.order_price AS orderPrice,
+            o.order_time AS orderTimestamp
+        from
+            order_2018 o,
+            field f,
+            hall_film_info h,
+            cinema ci
+        where
+            o.field_id = f.UUID
+          and
+            o.cinema_id =ci.UUID
+          and
+            o.film_id = h.film_id
+          and
+            o.order_user = #{userId}
+
+    </select>
+    <select id="getSoldSeatsByFieldId" parameterType="int" resultType="string">
+        select group_concat(seats_ids) from order_2018 where field_id = #{fieldId}
+    </select>
 
 </mapper>
