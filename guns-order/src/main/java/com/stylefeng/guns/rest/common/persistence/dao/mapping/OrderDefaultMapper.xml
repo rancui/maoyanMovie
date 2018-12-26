@@ -45,10 +45,10 @@
 
     <select id="getOrdersByUserId" parameterType="int" resultType="com.stylefeng.guns.api.order.vo.OrderVo">
         select
-            o.UUID as orderId
-            h.flim_name as  filmNam,
+            o.UUID as orderId,
+            h.film_name as  filmName,
             f.begin_time as fieldTime,
-            c.cinema_name AS cinemaName,
+            ci.cinema_name AS cinemaName,
             o.seats_name AS seatsName,
             o.order_price AS orderPrice,
             o.order_time AS orderTimestamp
@@ -56,11 +56,14 @@
             order_default o,
             field f,
             hall_film_info h,
-            cinemal c
+            cinema ci
         where
-            o.field_id = f.UUID,
-            o.cinema_id = c.UUID,
+            o.field_id = f.UUID
+        and
+            o.cinema_id =ci.UUID
+        and
             o.film_id = h.film_id
+        and
             o.order_user = #{userId}
 
     </select>
