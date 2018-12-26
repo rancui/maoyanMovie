@@ -1,7 +1,7 @@
 package com.stylefeng.guns.rest.common.persistence.dao;
 
 import com.stylefeng.guns.api.order.vo.OrderVo;
-import com.stylefeng.guns.rest.common.persistence.model.Order;
+import com.stylefeng.guns.rest.common.persistence.model.OrderDefault;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 import java.util.List;
@@ -12,10 +12,9 @@ import java.util.List;
  * </p>
  *
  * @author rancui
- * @since 2018-12-20
+ * @since 2018-12-26
  */
-public interface OrderMapper extends BaseMapper<Order> {
-
+public interface OrderDefaultMapper extends BaseMapper<OrderDefault> {
     String getSeatPathByFieldId(String fieldId);
     OrderVo getOrderVOByUuid(String orderId);
     List<OrderVo> getOrdersByUserId(Integer userId);

@@ -16,7 +16,7 @@ public interface OrderServiceAPI {
     OrderVo saveOrder(Integer fieldId, String soldSeats, String seatsName, Integer userId);
 
     // 使用当前登陆人获取已经购买的订单
-    Page<OrderVo> getOrderByUserId(Integer userId, Page<OrderVo> page);
+    Page<OrderVo> getOrderByUserId(Integer userId);
 
     // 根据FieldId 获取所有已经销售的座位编号
     String getSoldSeatsByFieldId(Integer fieldId);

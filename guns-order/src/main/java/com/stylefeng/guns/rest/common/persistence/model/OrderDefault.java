@@ -3,6 +3,7 @@ package com.stylefeng.guns.rest.common.persistence.model;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
 
 /**
@@ -11,9 +12,10 @@ import java.io.Serializable;
  * </p>
  *
  * @author rancui
- * @since 2018-12-20
+ * @since 2018-12-26
  */
-public class Order extends Model<Order> {
+@TableName("order_default")
+public class OrderDefault extends Model<OrderDefault> {
 
     private static final long serialVersionUID = 1L;
 
@@ -169,7 +171,7 @@ public class Order extends Model<Order> {
 
     @Override
     public String toString() {
-        return "Order{" +
+        return "OrderDefault{" +
         "uuid=" + uuid +
         ", cinemaId=" + cinemaId +
         ", fieldId=" + fieldId +

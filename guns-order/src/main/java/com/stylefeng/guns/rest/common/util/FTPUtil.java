@@ -27,6 +27,7 @@ public class FTPUtil {
     private void initFTPClent(){
         try {
             ftpClient = new FTPClient();
+            ftpClient.enterLocalPassiveMode();
             ftpClient.setControlEncoding("utf-8");
             ftpClient.connect(ip,port);
             ftpClient.login(userName,password);

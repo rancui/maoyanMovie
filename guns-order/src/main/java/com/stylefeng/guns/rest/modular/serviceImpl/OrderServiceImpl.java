@@ -11,8 +11,8 @@ import com.stylefeng.guns.api.cinema.vo.OrderNeedVo;
 import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.api.order.vo.OrderVo;
 import com.stylefeng.guns.core.util.BigDecimalUtil;
-import com.stylefeng.guns.rest.common.persistence.dao.OrderMapper;
-import com.stylefeng.guns.rest.common.persistence.model.Order;
+import com.stylefeng.guns.rest.common.persistence.dao.OrderDefaultMapper;
+import com.stylefeng.guns.rest.common.persistence.model.OrderDefault;
 import com.stylefeng.guns.rest.common.util.FTPUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import java.util.UUID;
 @Service(interfaceClass = OrderServiceAPI.class)
 public class OrderServiceImpl implements OrderServiceAPI {
     @Autowired
-    private OrderMapper orderMapper;
+    private OrderDefaultMapper orderDefaultMapper;
     @Autowired
     private FTPUtil ftpUtil;
     @Reference(interfaceClass = CinemaServiceAPI.class)
@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderServiceAPI {
     public boolean isTrueSeats(String fieldId, String seats) {
 
         // 根据FieldId找到对应的座位位置图
-        String seatPath = orderMapper.getSeatPathByFieldId(fieldId);
+        String seatPath = orderDefaultMapper.getSeatPathByFieldId(fieldId);
         // 读取位置图，判断seats是否为真
         String fileStrByAddress  = ftpUtil.getFileStrByAddress(seatPath);
         // 将fileStrByAddress转换为JSON对象
@@ -77,9 +77,9 @@ public class OrderServiceImpl implements OrderServiceAPI {
 
         EntityWrapper entityWrapper = new EntityWrapper();
         entityWrapper.eq("field_id",fieldId);
-        List<Order> orderList = orderMapper.selectList(entityWrapper);
+        List<OrderDefault> orderList = orderDefaultMapper.selectList(entityWrapper);
         String[] seatArr = seats.split(",");
-        for(Order order:orderList){
+        for(OrderDefault order:orderList){
             String[] idArr= order.getSeatsIds().split(",");
             for(String id:idArr){//遍历已售订单中的座位号
               for(String seat:seatArr){//遍历用户下单的座位号
@@ -118,20 +118,20 @@ public class OrderServiceImpl implements OrderServiceAPI {
         int orderCount = soldSeats.split(",").length;
         double orderTotalPrice = BigDecimalUtil.multiply(orderCount,filmPrice).doubleValue();
 
-        Order order = new Order();
-        order.setUuid(uuid);
-        order.setCinemaId(cinemaId);
-        order.setFieldId(fieldId);
-        order.setFilmId(filmId);
-        order.setOrderPrice(orderTotalPrice);
-        order.setFilmPrice(filmPrice);
-        order.setOrderUser(userId);
-        order.setSeatsIds(soldSeats);
-        order.setSeatsName(seatsName);
+        OrderDefault orderDefault = new OrderDefault();
+        orderDefault.setUuid(uuid);
+        orderDefault.setCinemaId(cinemaId);
+        orderDefault.setFieldId(fieldId);
+        orderDefault.setFilmId(filmId);
+        orderDefault.setOrderPrice(orderTotalPrice);
+        orderDefault.setFilmPrice(filmPrice);
+        orderDefault.setOrderUser(userId);
+        orderDefault.setSeatsIds(soldSeats);
+        orderDefault.setSeatsName(seatsName);
 
-        Integer count = orderMapper.insert(order);
+        Integer count = orderDefaultMapper.insert(orderDefault);
         if(count>0){
-            OrderVo orderVo = orderMapper.getOrderVOByUuid(uuid);
+           OrderVo orderVo = orderDefaultMapper.getOrderVOByUuid(uuid);
             if(orderVo==null||orderVo.getOrderId()==null){
                 return null;
             }
@@ -146,11 +146,10 @@ public class OrderServiceImpl implements OrderServiceAPI {
     /**
      * 使用当前登陆人获取已经购买的订单
      * @param userId
-     * @param page
      * @return
      */
     @Override
-    public Page<OrderVo> getOrderByUserId(Integer userId, Page<OrderVo> page) {
+    public Page<OrderVo> getOrderByUserId(Integer userId) {
 
         Page<OrderVo>  orderVoPage = new Page<>();
         if(userId==null){
@@ -158,16 +157,16 @@ public class OrderServiceImpl implements OrderServiceAPI {
             return null;
         }
 
-        List<OrderVo> orderVoList = orderMapper.getOrdersByUserId(userId);
+        List<OrderVo> orderVoList = orderDefaultMapper.getOrdersByUserId(userId);
         if(orderVoList==null||orderVoList.size()==0){
             orderVoPage.setTotal(0);
             orderVoPage.setRecords(new ArrayList<>());
             return orderVoPage;
         }else {
             // 获取订单总数
-            EntityWrapper<Order> entityWrapper = new EntityWrapper<>();
+            EntityWrapper<OrderDefault> entityWrapper = new EntityWrapper<>();
             entityWrapper.eq("order_user",userId);
-            Integer count = orderMapper.selectCount(entityWrapper);
+            Integer count = orderDefaultMapper.selectCount(entityWrapper);
             // 将结果放入Page
             orderVoPage.setTotal(count);
             orderVoPage.setRecords(orderVoList);
@@ -187,7 +186,7 @@ public class OrderServiceImpl implements OrderServiceAPI {
             return "";
         }
 
-        String SoldSeats = orderMapper.getSoldSeatsByFieldId(fieldId);
+        String SoldSeats = orderDefaultMapper.getSoldSeatsByFieldId(fieldId);
         return SoldSeats;
     }
 }

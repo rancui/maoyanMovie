@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author rancui
- * @since 2018-12-20
+ * @since 2018-12-26
  */
 @TableName("order_2018")
 public class Order2018 extends Model<Order2018> {

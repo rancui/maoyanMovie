@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.api.cinema.CinemaServiceAPI;
 import com.stylefeng.guns.api.cinema.vo.*;
+import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.rest.common.ServerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,8 @@ public class CinemaController {
 
     @Reference(interfaceClass = CinemaServiceAPI.class,connections = 10,cache = "lru")
     private CinemaServiceAPI cinemaServiceAPI;
+    @Reference(interfaceClass = OrderServiceAPI.class,check = false)
+    private OrderServiceAPI orderServiceAPI;
 
 
     /**
@@ -113,7 +116,9 @@ public class CinemaController {
             HallInfoVo hallInfoVo = cinemaServiceAPI.getFilmFieldInfo(fieldId);
 
             //造几个销售的假数据，后续会对接订单接口
-            hallInfoVo.setSoldSeats("1,2,3");
+//            hallInfoVo.setSoldSeats("1,2,3");
+
+            hallInfoVo.setSoldSeats(orderServiceAPI.getSoldSeatsByFieldId(fieldId));
 
             CinemaFieldResponseVo cinemaFieldResponseVo = new CinemaFieldResponseVo();
             cinemaFieldResponseVo.setCinemaInfoVo(cinemaInfoVo);
