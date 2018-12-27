@@ -3,6 +3,8 @@ package com.stylefeng.guns.rest.modular.controller.order;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.common.collect.Lists;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.api.order.vo.OrderVo;
 import com.stylefeng.guns.rest.common.CurrentUser;
@@ -26,6 +28,13 @@ public class OrderController {
 
     @Reference(interfaceClass = OrderServiceAPI.class,check = false,group ="order2017" )
     private OrderServiceAPI orderServiceAPI2017;
+
+
+    //此处做Hystrix的fallbackMethod服务
+    public ServerResponse error(Integer fieldId, String soldSeats, String seatName){
+        return ServerResponse.createErrorMsg("抱歉，下单的人太多了，请稍后重试");
+    }
+
     /**
      * 购票
      * @param fieldId
@@ -33,8 +42,31 @@ public class OrderController {
      * @param seatName
      * @return
      */
+    /* 在一个分布式系统里，许多依赖不可避免的会调用失败，比如超时、异常等，
+       如何能够保证在一个依赖出问题的情况下，不会导致整体服务失败，这个就是Hystrix需要做的事情。
+       Hystrix提供了熔断、隔离、Fallback、cache、监控等功能，能够在一个、或多个依赖同时出现问题时保证系统依然可用。
+       Hystrix除了熔断外，还有以下保护机制，用以保护线程的安全性：
+        信号量隔离
+        线程池隔离
+        线程切换
+     */
+    @HystrixCommand(fallbackMethod = "error", commandProperties = {
+            @HystrixProperty(name = "execution.isolation.strategy", value = "THREAD"),
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "4000"),
+            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "10"),
+            @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "50")},
+            threadPoolProperties = {
+                    @HystrixProperty(name = "coreSize", value = "1"),
+                    @HystrixProperty(name = "maxQueueSize", value = "10"),
+                    @HystrixProperty(name = "keepAliveTimeMinutes", value = "1000"),
+                    @HystrixProperty(name = "queueSizeRejectionThreshold", value = "8"),
+                    @HystrixProperty(name = "metrics.rollingStats.numBuckets", value = "12"),
+                    @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "1500")
+            })
     @PostMapping("buy_tickets")
     public ServerResponse buyTickets(Integer fieldId, String soldSeats, String seatName){
+        int a = 5/0;
+
         // 验证售出的票是否为真（是否为当场次的票）
         boolean isTrueSeats = orderServiceAPI.isTrueSeats(fieldId+"",soldSeats);
 
