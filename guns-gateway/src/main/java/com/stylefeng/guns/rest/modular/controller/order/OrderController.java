@@ -30,7 +30,7 @@ public class OrderController {
     private OrderServiceAPI orderServiceAPI2017;
 
 
-    //此处做Hystrix的fallbackMethod服务
+    //此处做Hystrix的fallbackMethod降级服务
     public ServerResponse error(Integer fieldId, String soldSeats, String seatName){
         return ServerResponse.createErrorMsg("抱歉，下单的人太多了，请稍后重试");
     }
@@ -106,15 +106,12 @@ public class OrderController {
         String userId = CurrentUser.getCurrentUser();
         // 使用当前登陆人获取已经购买的订单
         if(userId!=null&& userId.trim().length()!=0){
-//            Page<OrderVo> orderVoPage = orderServiceAPI.getOrderByUserId(Integer.parseInt(userId));
-//            return ServerResponse.creatSuccessPageInfo(pageNum,(int)orderVoPage.getPages(),null,orderVoPage.getRecords());
             Page<OrderVo> orderVoPage2017 = orderServiceAPI2017.getOrderByUserId(Integer.parseInt(userId));
             Page<OrderVo> orderVoPage2018 = orderServiceAPI.getOrderByUserId(Integer.parseInt(userId));
 
             //合并总页数
             int totalPages = (int)(orderVoPage2017.getPages()+orderVoPage2018.getPages());
             //合并订单列表
-//            List<OrderVo> orderVoList = new ArrayList<>();
             List<OrderVo> orderVoList = Lists.newArrayList();
             orderVoList.addAll(orderVoPage2017.getRecords());
             orderVoList.addAll(orderVoPage2018.getRecords());
