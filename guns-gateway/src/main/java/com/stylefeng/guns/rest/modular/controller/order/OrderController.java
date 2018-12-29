@@ -121,8 +121,40 @@ public class OrderController {
 
         return ServerResponse.createErrorMsg("用户未登录");
 
+    }
+
+    /**
+     * 获取支付二维码
+     * @param orderId
+     * @return
+     */
+    @PostMapping("get_order_info")
+    public ServerResponse getOrderInfo(@RequestParam("orderId") String orderId){
+
+        return null;
 
     }
+
+
+    /**
+     * 获取支付结果
+     * @param orderId 订单编号
+     * @param tryNums 重试次数，默认1,4次超时
+     * @return
+     */
+    @PostMapping("get_pay_result")
+    public ServerResponse getPayResult(@RequestParam("orderId") String orderId,@RequestParam("tryNums")Integer tryNums){
+
+        return null;
+
+    }
+
+
+
+
+
+
+
 
 
 }

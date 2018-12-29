@@ -7,9 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 @Slf4j
 @Data
@@ -21,6 +19,7 @@ public class FTPUtil {
     private Integer port;
     private String userName;
     private String password;
+    private String uploadPath;
 
     FTPClient ftpClient = null;
 
@@ -71,6 +70,38 @@ public class FTPUtil {
 
     }
 
+    // 上传FTP文件
+    public boolean uploadFile(String fileName, File file) {
+        FileInputStream fileInputStream = null;
+        try{
+            fileInputStream = new FileInputStream(file);
+
+            // FTP相关内容
+            initFTPClent();
+            // 设置FTP的关键参数
+            ftpClient.setControlEncoding("utf-8");
+            ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+            ftpClient.enterLocalPassiveMode();
+
+            // 将ftpClient的工作空间修改
+            ftpClient.changeWorkingDirectory(this.getUploadPath());
+
+            // 上传文件
+            ftpClient.storeFile(fileName,fileInputStream);
+
+            return true;
+        }catch (Exception e){
+            log.error("上传失败",e);
+            return false;
+        }finally {
+            try {
+                fileInputStream.close();
+                ftpClient.logout();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
 

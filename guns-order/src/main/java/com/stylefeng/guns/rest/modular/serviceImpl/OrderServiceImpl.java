@@ -11,6 +11,7 @@ import com.stylefeng.guns.api.cinema.vo.OrderNeedVo;
 import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.api.order.vo.OrderVo;
 import com.stylefeng.guns.core.util.BigDecimalUtil;
+import com.stylefeng.guns.rest.common.Const;
 import com.stylefeng.guns.rest.common.persistence.dao.OrderDefaultMapper;
 import com.stylefeng.guns.rest.common.persistence.model.OrderDefault;
 import com.stylefeng.guns.rest.common.util.FTPUtil;
@@ -189,4 +190,66 @@ public class OrderServiceImpl implements OrderServiceAPI {
         String SoldSeats = orderDefaultMapper.getSoldSeatsByFieldId(fieldId);
         return SoldSeats;
     }
+
+    /**
+     * 获取订单信息
+     * @param orderId
+     * @return
+     */
+    @Override
+    public OrderVo getOrderInfoByOrderId(String orderId) {
+        OrderVo orderVo = orderDefaultMapper.getOrderVOByUuid(orderId);
+        return orderVo;
+    }
+
+    /**
+     * 支付成功
+     * @param orderId
+     * @return
+     */
+    @Override
+    public boolean paySuccess(String orderId) {
+
+        OrderDefault orderDefault = new OrderDefault();
+        orderDefault.setUuid(orderId);
+        orderDefault.setOrderStatus(Const.OrderStatusEnum.PAY_SUCCESS.getCode());
+
+        int count = orderDefaultMapper.updateById(orderDefault);
+        if(count>0){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 支付失败
+     * @param orderId
+     * @return
+     */
+    @Override
+    public boolean payFail(String orderId) {
+
+        OrderDefault orderDefault = new OrderDefault();
+        orderDefault.setUuid(orderId);
+        orderDefault.setOrderStatus(Const.OrderStatusEnum.PAY_Fail.getCode());
+
+        int count = orderDefaultMapper.updateById(orderDefault);
+        if(count>0){
+            return true;
+        }
+        return false;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 }

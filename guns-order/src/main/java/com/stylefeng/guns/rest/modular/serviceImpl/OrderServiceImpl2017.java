@@ -11,8 +11,10 @@ import com.stylefeng.guns.api.cinema.vo.OrderNeedVo;
 import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.api.order.vo.OrderVo;
 import com.stylefeng.guns.core.util.BigDecimalUtil;
+import com.stylefeng.guns.rest.common.Const;
 import com.stylefeng.guns.rest.common.persistence.dao.Order2017Mapper;
 import com.stylefeng.guns.rest.common.persistence.model.Order2017;
+import com.stylefeng.guns.rest.common.persistence.model.OrderDefault;
 import com.stylefeng.guns.rest.common.util.FTPUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,4 +191,67 @@ public class OrderServiceImpl2017 implements OrderServiceAPI {
         String SoldSeats = order2017Mapper.getSoldSeatsByFieldId(fieldId);
         return SoldSeats;
     }
+
+    /**
+     * 获取订单信息
+     * @param orderId
+     * @return
+     */
+
+    @Override
+    public OrderVo getOrderInfoByOrderId(String orderId) {
+
+        OrderVo orderVo = order2017Mapper.getOrderVOByUuid(orderId);
+        return orderVo;
+    }
+
+
+    /**
+     * 支付成功
+     * @param orderId
+     * @return
+     */
+    @Override
+    public boolean paySuccess(String orderId) {
+
+        Order2017 order2017 = new Order2017();
+        order2017.setUuid(orderId);
+        order2017.setOrderStatus(Const.OrderStatusEnum.PAY_SUCCESS.getCode());
+
+        int count = order2017Mapper.updateById(order2017);
+        if(count>0){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 支付失败
+     * @param orderId
+     * @return
+     */
+    @Override
+    public boolean payFail(String orderId) {
+
+        Order2017 order2017 = new Order2017();
+        order2017.setUuid(orderId);
+        order2017.setOrderStatus(Const.OrderStatusEnum.PAY_Fail.getCode());
+
+        int count = order2017Mapper.updateById(order2017);
+        if(count>0){
+            return true;
+        }
+        return false;
+
+    }
+
+
+
+
+
+
+
+
+
+
 }

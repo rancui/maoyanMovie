@@ -11,7 +11,9 @@ import com.stylefeng.guns.api.cinema.vo.OrderNeedVo;
 import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.api.order.vo.OrderVo;
 import com.stylefeng.guns.core.util.BigDecimalUtil;
+import com.stylefeng.guns.rest.common.Const;
 import com.stylefeng.guns.rest.common.persistence.dao.Order2018Mapper;
+import com.stylefeng.guns.rest.common.persistence.model.Order2017;
 import com.stylefeng.guns.rest.common.persistence.model.Order2018;
 import com.stylefeng.guns.rest.common.persistence.model.OrderDefault;
 import com.stylefeng.guns.rest.common.util.FTPUtil;
@@ -190,4 +192,58 @@ public class OrderServiceImpl2018 implements OrderServiceAPI {
         String SoldSeats = order2018Mapper.getSoldSeatsByFieldId(fieldId);
         return SoldSeats;
     }
+
+    /**
+     * 获取订单信息
+     * @param orderId
+     * @return
+     */
+
+    @Override
+    public OrderVo getOrderInfoByOrderId(String orderId) {
+
+        OrderVo orderVo = order2018Mapper.getOrderVOByUuid(orderId);
+        return orderVo;
+    }
+
+
+    /**
+     * 支付成功
+     * @param orderId
+     * @return
+     */
+    @Override
+    public boolean paySuccess(String orderId) {
+
+        Order2018 order2018 = new Order2018();
+        order2018.setUuid(orderId);
+        order2018.setOrderStatus(Const.OrderStatusEnum.PAY_SUCCESS.getCode());
+
+        int count = order2018Mapper.updateById(order2018);
+        if(count>0){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 支付失败
+     * @param orderId
+     * @return
+     */
+    @Override
+    public boolean payFail(String orderId) {
+
+        Order2018 order2018 = new Order2018();
+        order2018.setUuid(orderId);
+        order2018.setOrderStatus(Const.OrderStatusEnum.PAY_Fail.getCode());
+
+        int count = order2018Mapper.updateById(order2018);
+        if(count>0){
+            return true;
+        }
+        return false;
+
+    }
+
 }
