@@ -1,6 +1,9 @@
 package com.stylefeng.guns.rest.alipay.utils;
 
-import com.stylefeng.guns.rest.modular.alipay.model.hb.*;
+import com.stylefeng.guns.rest.alipay.model.hb.ExceptionInfo;
+import com.stylefeng.guns.rest.alipay.model.hb.ExceptionInfoAdapter;
+import com.stylefeng.guns.rest.alipay.model.hb.TradeInfo;
+import com.stylefeng.guns.rest.alipay.model.hb.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;

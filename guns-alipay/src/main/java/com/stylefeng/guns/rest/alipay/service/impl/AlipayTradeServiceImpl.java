@@ -8,13 +8,11 @@ import com.stylefeng.guns.rest.alipay.config.Configs;
 import com.stylefeng.guns.rest.alipay.config.Constants;
 import com.stylefeng.guns.rest.alipay.model.TradeStatus;
 import com.stylefeng.guns.rest.alipay.model.builder.AlipayTradePayRequestBuilder;
-import com.stylefeng.guns.rest.alipay.model.builder.AlipayTradePrecreateRequestBuilder;
+
 import com.stylefeng.guns.rest.alipay.model.builder.AlipayTradeQueryRequestBuilder;
-import com.stylefeng.guns.rest.alipay.model.builder.AlipayTradeRefundRequestBuilder;
+
 import com.stylefeng.guns.rest.alipay.model.result.AlipayF2FPayResult;
-import com.stylefeng.guns.rest.alipay.model.result.AlipayF2FPrecreateResult;
-import com.stylefeng.guns.rest.alipay.model.result.AlipayF2FQueryResult;
-import com.stylefeng.guns.rest.alipay.model.result.AlipayF2FRefundResult;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -24,21 +22,6 @@ import org.apache.commons.lang.StringUtils;
  *
  */
 public class AlipayTradeServiceImpl extends AbsAlipayTradeService {
-
-    @Override
-    public AlipayF2FQueryResult queryTradeResult(AlipayTradeQueryRequestBuilder builder) {
-        return null;
-    }
-
-    @Override
-    public AlipayF2FRefundResult tradeRefund(AlipayTradeRefundRequestBuilder builder) {
-        return null;
-    }
-
-    @Override
-    public AlipayF2FPrecreateResult tradePrecreate(AlipayTradePrecreateRequestBuilder builder) {
-        return null;
-    }
 
     public static class ClientBuilder {
         private String gatewayUrl;

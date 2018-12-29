@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.google.common.collect.Lists;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import com.stylefeng.guns.api.alipay.AlipayServiceAPI;
+import com.stylefeng.guns.api.alipay.vo.AlipayInfoVo;
+import com.stylefeng.guns.api.alipay.vo.AlipayResultVo;
 import com.stylefeng.guns.api.order.OrderServiceAPI;
 import com.stylefeng.guns.api.order.vo.OrderVo;
 import com.stylefeng.guns.rest.common.CurrentUser;
@@ -23,11 +26,18 @@ import java.util.List;
 @RequestMapping("/order/")
 public class OrderController {
 
+    public static final  String IMG_PRE = "http://www.rc.com";
+
+
     @Reference(interfaceClass = OrderServiceAPI.class,check = false,group ="order2018" )
     private OrderServiceAPI orderServiceAPI;
 
     @Reference(interfaceClass = OrderServiceAPI.class,check = false,group ="order2017" )
     private OrderServiceAPI orderServiceAPI2017;
+
+    @Reference(interfaceClass = AlipayServiceAPI.class,check = false)
+    private AlipayServiceAPI alipayServiceAPI;
+
 
 
     //此处做Hystrix的fallbackMethod降级服务
@@ -65,8 +75,6 @@ public class OrderController {
             })
     @PostMapping("buy_tickets")
     public ServerResponse buyTickets(Integer fieldId, String soldSeats, String seatName){
-        int a = 5/0;
-
         // 验证售出的票是否为真（是否为当场次的票）
         boolean isTrueSeats = orderServiceAPI.isTrueSeats(fieldId+"",soldSeats);
 
@@ -128,24 +136,61 @@ public class OrderController {
      * @param orderId
      * @return
      */
-    @PostMapping("get_order_info")
-    public ServerResponse getOrderInfo(@RequestParam("orderId") String orderId){
-
-        return null;
-
+    @PostMapping("get_pay_info")
+    public ServerResponse getPayInfo(@RequestParam("orderId") String orderId){
+        String userId = CurrentUser.getCurrentUser();
+        if(userId==null||userId.trim().length()==0){
+            return ServerResponse.createErrorMsg("抱歉，用户未登录");
+        }
+        //订单二维码
+        AlipayInfoVo alipayInfoVo = alipayServiceAPI.getQRCode(orderId);
+        return ServerResponse.createSuccessImgPreData(IMG_PRE,null,alipayInfoVo);
     }
+
+
+
+//
+//    public ServerResponse tryNumsMore(@RequestParam("orderId") String orderId,@RequestParam("tryNums")Integer tryNums){
+//
+//            return ServerResponse.createErrorMsg("订单支付失败，请稍后重试");
+//
+//    }
 
 
     /**
      * 获取支付结果
      * @param orderId 订单编号
-     * @param tryNums 重试次数，默认1,4次超时
+     * @param tryNums 重试次数，默认是1,超过4次则超时
      * @return
      */
+//    @HystrixCommand(fallbackMethod = "tryNumsMore", commandProperties = {
+//            @HystrixProperty(name = "execution.isolation.strategy", value = "THREAD"),
+//            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "4000"),
+//            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "10"),
+//            @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "50")},
+//            threadPoolProperties = {
+//                    @HystrixProperty(name = "coreSize", value = "1"),
+//                    @HystrixProperty(name = "maxQueueSize", value = "10"),
+//                    @HystrixProperty(name = "keepAliveTimeMinutes", value = "1000"),
+//                    @HystrixProperty(name = "queueSizeRejectionThreshold", value = "8"),
+//                    @HystrixProperty(name = "metrics.rollingStats.numBuckets", value = "12"),
+//                    @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "1500")
+//            })
     @PostMapping("get_pay_result")
     public ServerResponse getPayResult(@RequestParam("orderId") String orderId,@RequestParam("tryNums")Integer tryNums){
 
-        return null;
+        String userId = CurrentUser.getCurrentUser();
+        if(userId==null||userId.trim().length()==0){
+            return ServerResponse.createErrorMsg("抱歉，用户未登录");
+        }
+
+        if(tryNums>=4){
+            return ServerResponse.createErrorMsg("订单支付失败，请稍后重试");
+        }
+
+        AlipayResultVo alipayResultVo = alipayServiceAPI.getOrderStatus(orderId);
+
+        return ServerResponse.createSuccessData(alipayResultVo);
 
     }
 

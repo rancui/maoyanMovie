@@ -12,13 +12,16 @@ import com.stylefeng.guns.rest.alipay.config.Configs;
 import com.stylefeng.guns.rest.alipay.model.ExtendParams;
 import com.stylefeng.guns.rest.alipay.model.GoodsDetail;
 import com.stylefeng.guns.rest.alipay.model.builder.AlipayTradePrecreateRequestBuilder;
+import com.stylefeng.guns.rest.alipay.model.builder.AlipayTradeQueryRequestBuilder;
 import com.stylefeng.guns.rest.alipay.model.result.AlipayF2FPrecreateResult;
+import com.stylefeng.guns.rest.alipay.model.result.AlipayF2FQueryResult;
 import com.stylefeng.guns.rest.alipay.service.AlipayMonitorService;
 import com.stylefeng.guns.rest.alipay.service.AlipayTradeService;
 import com.stylefeng.guns.rest.alipay.service.impl.AlipayMonitorServiceImpl;
 import com.stylefeng.guns.rest.alipay.service.impl.AlipayTradeServiceImpl;
 import com.stylefeng.guns.rest.alipay.service.impl.AlipayTradeWithHBServiceImpl;
 import com.stylefeng.guns.rest.alipay.utils.ZxingUtils;
+import com.stylefeng.guns.rest.common.Const;
 import com.stylefeng.guns.rest.common.util.FTPUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +36,7 @@ import java.util.List;
 @Service(interfaceClass =AlipayServiceAPI.class )
 public class AlipayServiceImpl implements AlipayServiceAPI {
 
-    @Reference(interfaceClass = OrderServiceAPI.class,check = false)
+    @Reference(interfaceClass = OrderServiceAPI.class,check = false,group = "order2018")
     private OrderServiceAPI orderServiceAPI;
     @Autowired
     private FTPUtil ftpUtil;
@@ -86,11 +89,54 @@ public class AlipayServiceImpl implements AlipayServiceAPI {
         return alipayInfoVo;
     }
 
+    /**
+     * 获取订单支付状态
+     * @param orderId
+     * @return
+     */
     @Override
     public AlipayResultVo getOrderStatus(String orderId) {
+        boolean isSuccess = trade_query(orderId);
+        if(isSuccess){
+            AlipayResultVo alipayResultVo = new AlipayResultVo();
+            alipayResultVo.setOrderId(orderId);
+            alipayResultVo.setOrderStatus(String.valueOf(Const.OrderStatusEnum.PAY_SUCCESS.getCode()));
+            alipayResultVo.setOrderMsg("支付成功");
+            return alipayResultVo;
+        }
+
         return null;
     }
 
+    // 测试当面付2.0查询订单
+    public boolean trade_query(String orderId) {
+        boolean flag = false;
+        // (必填) 商户订单号，通过此商户订单号查询当面付的交易状态
+        String outTradeNo = orderId;
+
+        // 创建查询请求builder，设置请求参数
+        AlipayTradeQueryRequestBuilder builder = new AlipayTradeQueryRequestBuilder()
+                .setOutTradeNo(outTradeNo);
+
+        AlipayF2FQueryResult result = tradeService.queryTradeResult(builder);
+        switch (result.getTradeStatus()) {
+            case SUCCESS:
+                log.info("查询返回该订单支付成功: )");
+                // 当订单支付成功状态时，修改订单状态为1
+                flag = orderServiceAPI.paySuccess(orderId);
+                break;
+            case FAILED:
+                log.error("查询返回该订单支付失败或被关闭!!!");
+                break;
+            case UNKNOWN:
+                log.error("系统异常，订单支付状态未知!!!");
+                break;
+            default:
+                log.error("不支持的交易状态，交易返回异常!!!");
+                break;
+        }
+        return flag;
+    }
 
     // 测试当面付2.0生成支付二维码
     public String trade_precreate(String orderId) {
