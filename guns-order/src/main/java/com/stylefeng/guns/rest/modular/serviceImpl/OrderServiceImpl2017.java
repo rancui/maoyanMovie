@@ -36,7 +36,7 @@ public class OrderServiceImpl2017 implements OrderServiceAPI {
     private CinemaServiceAPI cinemaServiceAPI;
 
     /**
-     * 验证是否为真实的座位编号
+     * 验证该座位号是否真实存在
      * @param fieldId
      * @param seats
      * @return
